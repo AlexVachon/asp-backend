@@ -27,6 +27,15 @@ const UserService = {
       throw error;
     }
   },
+  async findUserById(id){
+    try{
+      const user = await User.findByPk(id);
+
+      return user;
+    }catch(error){
+      console.error("Erreur lors de la rechercher de l'utilisateur:", error);
+    }
+  },
   async findUserByEmail(email) {
     try {
       const user = await User.findOne({ where: { email } });
