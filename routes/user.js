@@ -1,9 +1,11 @@
 const express = require("express");
+
 const router = express.Router();
+
 const UserService = require("../services/user");
 const authenticateToken = require("../middlewares/auth");
 
-router.post("/signup", async (req, res) => {
+router.post("/auth/signup", async (req, res) => {
   const { first_name, last_name, email, password } = req.body;
 
   try {
@@ -23,7 +25,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -56,3 +58,5 @@ router.get('/me', authenticateToken, async(req, res) => {
     res.status(500).json({ message: 'Erreur interne du serveur.' });
   }
 })
+
+module.exports = router;
