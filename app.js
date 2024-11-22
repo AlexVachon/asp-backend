@@ -7,9 +7,11 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 8000
 
-app.get('/api/test', (req, res) => {
-    res.json({ status: 200, message: "Ceci est un test !"})
-})
+const userRoutes = require("./routes/user")
+
+app.use(express.json())
+app.use('/api/users', userRoutes);
+
 
 app.listen(PORT, () => {
     console.clear()
