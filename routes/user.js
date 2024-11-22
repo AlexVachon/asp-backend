@@ -41,5 +41,18 @@ router.post("/login", async (req, res) => {
 });
 
 router.get('/me', authenticateToken, async(req, res) => {
-  
+  try{
+    const user = await UserService.findUserById(req.user.id);
+
+    if(!user) return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+		res.status(200).json({
+				id: user.id,
+				first_name: user.first_name,
+				last_name: user.last_name,
+				email: user.email,
+		});
+  }catch(error){
+		console.error('Erreur lors de la récupération de l\'utilisateur:', error);
+    res.status(500).json({ message: 'Erreur interne du serveur.' });
+  }
 })
