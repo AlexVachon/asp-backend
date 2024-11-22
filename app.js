@@ -1,19 +1,27 @@
 const express = require('express');
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 const sequelize = require('./config/database');
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
-const PORT = process.env.PORT || 8000
+const app = express();
+const PORT = process.env.PORT || 8000;
 
-const userRoutes = require("./routes/user")
+const userRoutes = require("./routes/user");
 
-app.use(express.json())
+app.use(express.json());
 app.use('/api/users', userRoutes);
 
-
-app.listen(PORT, () => {
-    console.clear()
-    console.log(`Serveur démarré\nhttp://localhost:${PORT}\nCtrl + C pour sortir`)
-})
+// Connexion à la base de données et démarrage du serveur
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connexion à la base de données réussie!');
+    app.listen(PORT, () => {
+      console.clear();
+      console.log(`Serveur démarré sur http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Impossible de se connecter à la base de données:', err);
+    process.exit(1);
+  });
