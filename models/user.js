@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { sequelize } = require("../config/database");
 const bcrypt = require("bcrypt");
 
 const User = sequelize.define(
@@ -42,7 +42,7 @@ const User = sequelize.define(
     },
   },
   {
-    tableName: "Users",
+    tableName: "users",
     timestamps: true,
     hooks: {
       beforeCreate: async (user) => {
@@ -55,8 +55,8 @@ const User = sequelize.define(
   }
 );
 
-User.prototype.validPassword = async function (password) {
-  return bcrypt.compare(password, this.password);
+const validatePassword = async (inputPassword, hashedPassword) => {
+  return bcrypt.compare(inputPassword, hashedPassword);
 };
 
-module.exports = User;
+module.exports = { User, validatePassword };

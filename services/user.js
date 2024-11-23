@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const { User, validatePassword } = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -27,33 +27,24 @@ const UserService = {
       throw error;
     }
   },
-  async findUserById(id){
-    try{
+  async findUserById(id) {
+    try {
       const user = await User.findByPk(id);
 
       return user;
-    }catch(error){
-      console.error("Erreur lors de la rechercher de l'utilisateur:", error);
-    }
-  },
-  async findUserByEmail(email) {
-    try {
-      const user = await User.findOne({ where: { email } });
-      return user;
     } catch (error) {
-      console.error("Erreur lors de la recherche de l'utilisateur:", error);
-      throw error;
+      console.error("Erreur lors de la rechercher de l'utilisateur:", error);
     }
   },
   async loginUser(email, password) {
     try {
-      const user = this.findUserByEmail(email);
+      const user = await User.findOne({ where: { email } });
 
-      if (!user) throw new Error("Utilisateur non trouvé");
+      if (!user) throw new Error("Vérifier l'adresse e-mail saisie");
 
-      const isValid = await user.validPassword(password);
+      const isValid = await validatePassword(password, user.password);
 
-      if (!isValid) throw new Error("Mot de passe incorrect");
+      if (!isValid) throw new Error("Mot de passe incorrect!");
 
       const token = jwt.sign(
         {
